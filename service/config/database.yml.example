@@ -1,0 +1,26 @@
+production:
+  adapter:
+  database:
+  username:
+  host:
+  password:
+  pool:
+  timeout:
+
+development:
+  adapter:
+  database:
+  username:
+  host:
+  password:
+  pool:
+  timeout:
+
+test:
+  adapter:
+  database:
+  username:
+  host:
+  password:
+  pool:
+  timeout:

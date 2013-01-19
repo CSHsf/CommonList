@@ -2,8 +2,15 @@ source :rubygems
 
 gem 'sinatra'
 gem 'rack'
+gem 'activerecord'
+gem 'sinatra-activerecord'
 
 group :test do
 	gem 'rack-test'
 	gem 'rspec'
+end
+
+group :development do
+	gem 'sqlite3'
+	gem 'shotgun'
 end
