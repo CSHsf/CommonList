@@ -3,6 +3,10 @@ class GroceryService < Sinatra::Application
 		set :database, YAML::load(File.open('config/database.yml'))[environment.to_s]
 	end
 
+	configure :test do
+		ActiveRecord::Base.logger.level = 1
+	end
+
 	helpers do
 		def find_or_create_item(itemname, listname)
 		end
@@ -55,10 +59,15 @@ class GroceryService < Sinatra::Application
 			item = list.items.create(:name => params[:item])
 		end
 
+		item.deleted = false
+
 		unless item.needed == params[:needed] || params[:needed].nil?
 			# Log the state change
 			item.needed = params[:needed]
-			item.save
+		end
+
+		unless item.save
+			status 500
 		end
 	end
 
