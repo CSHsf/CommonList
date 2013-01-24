@@ -23,6 +23,7 @@ GEM
       rack
     rack-test (0.6.2)
       rack (>= 1.0)
+    rake (10.0.2)
     rspec (2.10.0)
       rspec-core (~> 2.10.0)
       rspec-expectations (~> 2.10.0)
@@ -52,6 +53,7 @@ DEPENDENCIES
   database_cleaner
   rack
   rack-test
+  rake
   rspec
   shotgun
   sinatra
