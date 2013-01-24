@@ -4,6 +4,7 @@ gem 'sinatra'
 gem 'rack'
 gem 'activerecord'
 gem 'sinatra-activerecord'
+gem 'rake'
 
 group :test do
 	gem 'rack-test'
