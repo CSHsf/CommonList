@@ -8,19 +8,19 @@ production:
   timeout:
 
 development:
-  adapter:
-  database:
+  adapter:  sqlite3
+  database: db/develop.db
   username:
-  host:
+  host:     localhost
   password:
   pool:
   timeout:
 
 test:
-  adapter:
-  database:
+  adapter:  sqlite3
+  database: db/test.db
   username:
-  host:
+  host:     localhost
   password:
   pool:
   timeout:
