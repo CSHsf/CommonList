@@ -1,6 +1,6 @@
 class GroceryService < Sinatra::Application
 	configure do
-		set :database, YAML::load(File.open('config/database.yml'))[environment.to_s]
+		set :database, YAML.load(ERB.new(File.read('config/database.yml')).result)[environment.to_s]
 	end
 
 	configure :test do
