@@ -11,3 +11,12 @@ branches:
 script:
   - bundle exec rake db:migrate RACK_ENV=test
   - bundle exec rspec
+
+after_success:
+  - wget -qO- https://toolbelt.heroku.com/install-ubuntu.sh | sh
+  - heroku plugins:install https://github.com/ddollar/heroku-anvil
+  - heroku build -r aqueous-tundra-2096  -b https://github.com/heroku/heroku-buildpack-ruby.git
+
+env:
+  global:
+    - secure: ! 'V/V46vvuIiYCaFyZUwgDsG26QHVeYzA3WjqRpZ43b+mluncEKsAuybKcRLkeKWX4ulv8RpOn097CWFvX9SPN5vLmI5YVgGWXzs0191gavvT40y1u6U/d+GwaovPszpf0h7LZkgJ8F1EcrrpDgpfws6X9DcwT0dYNaMRd2a+rbhA='
