@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Grocery Service' do
+describe 'List Service' do
 	before :each do
 		@user1 = User.create(:username => 'test_user1')
 

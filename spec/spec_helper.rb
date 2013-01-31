@@ -23,5 +23,5 @@ RSpec.configure do |config|
 end
 
 def app
-	GroceryService
+	ListService
 end

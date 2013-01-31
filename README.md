@@ -1,4 +1,4 @@
-GroceryList
+CommonList
 ===========
 
-You guessed it.
+Its a distributed list floating atop the clouds.
