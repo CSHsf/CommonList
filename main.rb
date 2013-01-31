@@ -22,7 +22,7 @@ class ListService < Sinatra::Application
 			status 404
 			return
 		end
-		list.to_json(:methods => [:items])
+		list.to_json
 	end
 
 	get '/lists/:list/items' do
