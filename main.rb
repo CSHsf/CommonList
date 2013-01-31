@@ -35,7 +35,12 @@ class ListService < Sinatra::Application
 	end
 
 	get '/lists/:list/items/:item' do
-		item = Item.find_by_list_id_and_name(params[:list], params[:item])
+		list = List.find_by_name(params[:list])
+		unless list
+			status 404
+			return
+		end
+		item = list.items.where(:name => params[:item]).first
 		unless item
 			status 404
 			return
@@ -44,7 +49,15 @@ class ListService < Sinatra::Application
 	end
 
 	put '/lists/:list/items/:item' do
-		item = Item.find_or_create_by_list_id_and_name(params[:list], params[:item])
+		list = List.find_by_name(params[:list])
+		unless list
+			list = List.create(:name => params[:list])
+		end
+
+		item = list.items.where(:name => params[:item]).first
+		unless item
+			item = list.items.create(:name => params[:item])
+		end
 
 		item.deleted = false
 
@@ -59,7 +72,12 @@ class ListService < Sinatra::Application
 	end
 
 	delete '/lists/:list/items/:item' do
-		item = Item.find_by_list_id_and_name(params[:list], params[:item])
+		list = List.find_by_name(params[:list])
+		unless list
+			status 404
+			return
+		end
+		item = list.items.where(:name => params[:item]).first
 		unless item
 			status 404
 			return
