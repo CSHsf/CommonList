@@ -1,4 +1,4 @@
-class GroceryService < Sinatra::Application
+class ListService < Sinatra::Application
 	configure do
 		set :database, YAML.load(ERB.new(File.read('config/database.yml')).result)[environment.to_s]
 	end
