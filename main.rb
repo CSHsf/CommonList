@@ -31,7 +31,7 @@ class ListService < Sinatra::Application
 	end
 
 	get '/lists/:list/items' do
-		format List.find_by_name(params[:list])
+		format List.find_by_name(params[:list]).items
 	end
 
 	get '/lists/:list/items/:item' do
