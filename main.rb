@@ -8,8 +8,18 @@ class ListService < Sinatra::Application
 	end
 
 	helpers do
-		def find_or_create_item(itemname, listname)
+		def format(obj)
+			if obj.nil?
+				halt 404
+			else
+				obj.to_json
+			end
 		end
+	end
+
+	before do
+		cache_control :no_cache, :must_revalidate
+		content_type 'application/json'
 	end
 
 	get '/' do
@@ -17,28 +27,16 @@ class ListService < Sinatra::Application
 	end
 
 	get '/lists/:list' do
-		if (list = List.find_by_name(params[:list]))
-			list.to_json
-		else
-			status 404
-		end
+		format List.find_by_name(params[:list])
 	end
 
 	get '/lists/:list/items' do
-		if (list = List.find_by_name(params[:list]))
-			list.items.to_json
-		else
-			status 404
-		end
+		format List.find_by_name(params[:list])
 	end
 
 	get '/lists/:list/items/:item' do
-		if (list = List.find_by_name(params[:list])) &&
-		   (item = list.items.where(:name => params[:item]).first)
-			item.to_json
-		else
-			status 404
-		end
+		list = List.find_by_name(params[:list])
+		format if list.nil? ? nil : list.items.where(:name => params[:item]).first
 	end
 
 	put '/lists/:list/items/:item' do
@@ -53,7 +51,7 @@ class ListService < Sinatra::Application
 		end
 
 		unless item.save
-			status 500
+			halt 500
 		end
 	end
 
@@ -62,7 +60,7 @@ class ListService < Sinatra::Application
 		   (item = list.items.where(:name => params[:item]).first)
 			item.deleted = true
 			unless item.save
-				status 500
+				halt 500
 			end
 		else
 			status 404
