@@ -20,7 +20,7 @@ describe 'List Service' do
 	end
 
 	it 'should create a new needed item and add it to an existing list' do
-		put '/lists/test_list1/items/new_item1', :needed => true
+		post "/lists/#{@list1.id}/items", :name => 'new_item1', :needed => true
 		last_response.status.should == 200
 		items = List.find_by_name('test_list1').items.where(:name => 'new_item1')
 		items.count.should == 1
@@ -30,7 +30,7 @@ describe 'List Service' do
 	end
 
 	it 'should create a new unneeded item and add it to an existing list' do
-		put '/lists/test_list1/items/new_item1', :needed => false
+		post "/lists/#{@list1.id}/items", :name => 'new_item1', :needed => false
 		last_response.status.should == 200
 		items = List.find_by_name('test_list1').items.where(:name => 'new_item1')
 		items.count.should == 1
@@ -40,8 +40,13 @@ describe 'List Service' do
 	end
 
 	it 'should create a new list and a new needed item' do
-		put '/lists/new_list1/items/new_item1', :needed => true
+		post '/lists', :title => 'new_list1'
 		last_response.status.should == 200
+		list = JSON last_response.body
+
+		post "/lists/#{list['id']}/items", :name => 'new_item1', :needed => true
+		last_response.status.should == 200
+
 		list = List.find_by_name('new_list1')
 		list.should_not == nil
 		items = list.items.where(:name => 'new_item1')
@@ -52,7 +57,13 @@ describe 'List Service' do
 	end
 
 	it 'should create a new list and a new unneeded item' do
-		put '/lists/new_list1/items/new_item1', :needed => false
+		post '/lists', :title => 'new_list1'
+		last_response.status.should == 200
+		list = JSON last_response.body
+
+		post "/lists/#{list['id']}/items", :name => 'new_item1', :needed => false
+		last_response.status.should == 200
+
 		last_response.status.should == 200
 		list = List.find_by_name('new_list1')
 		list.should_not == nil
@@ -64,7 +75,7 @@ describe 'List Service' do
 	end
 
 	it 'should mark a needed item needed' do
-		put '/lists/test_list1/items/test_item1', :needed => true
+		put "/lists/#{@list1.id}/items/#{@item1.id}", :needed => true
 		last_response.status.should == 200
 		item = List.find_by_name('test_list1').items.where(:name => 'test_item1').first
 		item.deleted.should == false
@@ -72,7 +83,7 @@ describe 'List Service' do
 	end
 
 	it 'should mark an unneeded item needed' do
-		put '/lists/test_list1/items/test_item2', :needed => true
+		put "/lists/#{@list1.id}/items/#{@item2.id}", :needed => true
 		last_response.status.should == 200
 		item = List.find_by_name('test_list1').items.where(:name => 'test_item2').first
 		item.deleted.should == false
@@ -80,7 +91,7 @@ describe 'List Service' do
 	end
 
 	it 'should mark a needed item unneeded' do
-		put '/lists/test_list1/items/test_item1', :needed => false
+		put "/lists/#{@list1.id}/items/#{@item1.id}", :needed => false
 		last_response.status.should == 200
 		item = List.find_by_name('test_list1').items.where(:name => 'test_item1').first
 		item.deleted.should == false
@@ -88,7 +99,7 @@ describe 'List Service' do
 	end
 
 	it 'should mark an unneeded item unneeded' do
-		put '/lists/test_list1/items/test_item2', :needed => false
+		put "/lists/#{@list1.id}/items/#{@item2.id}", :needed => false
 		last_response.status.should == 200
 		item = List.find_by_name('test_list1').items.where(:name => 'test_item2').first
 		item.deleted.should == false
@@ -96,7 +107,7 @@ describe 'List Service' do
 	end
 
 	it 'should undelete a deleted item and mark it unneeded' do
-		put '/lists/test_list1/items/test_item3', :needed => false
+		put "/lists/#{@list1.id}/items/#{@item3.id}", :needed => false
 		last_response.status.should == 200
 		item = List.find_by_name('test_list1').items.where(:name => 'test_item3').first
 		item.deleted.should == false
@@ -104,7 +115,7 @@ describe 'List Service' do
 	end
 
 	it 'should undelete a deleted item and mark it needed' do
-		put '/lists/test_list1/items/test_item4', :needed => true
+		put "/lists/#{@list1.id}/items/#{@item4.id}", :needed => true
 		last_response.status.should == 200
 		item = List.find_by_name('test_list1').items.where(:name => 'test_item4').first
 		item.deleted.should == false
@@ -112,7 +123,7 @@ describe 'List Service' do
 	end
 
 	it 'should delete an item' do
-		delete '/lists/test_list1/items/test_item1'
+		delete "/lists/#{@list1.id}/items/#{@item1.id}"
 		last_response.status.should == 200
 		item = List.find_by_name('test_list1').items.where(:name => 'test_item1').first
 		item.deleted.should == true

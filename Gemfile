@@ -5,6 +5,7 @@ gem 'rack'
 gem 'activerecord'
 gem 'sinatra-activerecord'
 gem 'rake'
+gem 'uuidtools'
 
 group :test do
 	gem 'sqlite3'
