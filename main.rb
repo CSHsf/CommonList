@@ -22,27 +22,25 @@ class ListService < Sinatra::Application
 		content_type 'application/json'
 	end
 
-	get '/' do
-		return 'Hi'
-	end
-
 	get '/lists/:list' do
 		format List.find_by_name(params[:list])
 	end
 
 	get '/lists/:list/items' do
-		format List.find_by_name(params[:list]).items
+		list = List.find_by_name(params[:list])
+		format list.nil? ? nil : list.items
 	end
 
 	get '/lists/:list/items/:item' do
 		list = List.find_by_name(params[:list])
-		format if list.nil? ? nil : list.items.where(:name => params[:item]).first
+		format list.nil? ? nil : list.items.where(:name => params[:item]).first
 	end
 
 	put '/lists/:list/items/:item' do
 		list = List.find_or_create_by_name(params[:list])
 		item = list.items.find_or_create_by_name(params[:item])
 
+		list.title = params[:title] if params[:title]
 		item.deleted = false
 
 		unless item.needed == params[:needed] || params[:needed].nil?
@@ -50,7 +48,7 @@ class ListService < Sinatra::Application
 			item.needed = params[:needed]
 		end
 
-		unless item.save
+		unless item.save && list.save
 			halt 500
 		end
 	end

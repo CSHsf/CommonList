@@ -8,16 +8,16 @@ Dir[File.expand_path('../models/*.rb', File.dirname(__FILE__))].each { |file| p 
 RSpec.configure do |config|
 	config.include Rack::Test::Methods
 
-	config.before(:suite) do
+	config.before :suite do
 		DatabaseCleaner.strategy = :transaction
 		DatabaseCleaner.clean_with(:truncation)
 	end
 
-	config.before(:each) do
+	config.before do
 		DatabaseCleaner.start
 	end
 
-	config.after(:each) do
+	config.after do
 		DatabaseCleaner.clean
 	end
 end
