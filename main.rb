@@ -22,23 +22,39 @@ class ListService < Sinatra::Application
 		content_type 'application/json'
 	end
 
-	get '/lists/:list' do
-		format List.find_by_name(params[:list])
+	get '/lists/:list_id' do
+		format List.find_by_id(params[:list_id])
 	end
 
-	get '/lists/:list/items' do
-		list = List.find_by_name(params[:list])
+	get '/lists/:list_id/items' do
+		list = List.find_by_id(params[:list_id])
 		format list.nil? ? nil : list.items
 	end
 
-	get '/lists/:list/items/:item' do
-		list = List.find_by_name(params[:list])
+	get '/lists/:list_id/items/:item' do
+		list = List.find_by_id(params[:list_id])
 		format list.nil? ? nil : list.items.where(:name => params[:item]).first
 	end
 
-	put '/lists/:list/items/:item' do
-		list = List.find_or_create_by_name(params[:list])
-		item = list.items.find_or_create_by_name(params[:item])
+	post '/lists' do
+		format List.create(:name => params[:title])
+	end
+
+	post '/lists/:list_id/items' do
+		list = List.find_by_id(params[:list_id])
+		if list
+			item = list.items.create do |item|
+				item.name = params[:name]
+				item.needed = params[:needed] || false
+			end
+			# Log the state change
+		end
+		format item
+	end
+
+	put '/lists/:list_id/items/:item_id' do
+		list = List.find_by_id(params[:list_id])
+		item = list.items.find_by_id(params[:item_id])
 
 		list.title = params[:title] if params[:title]
 		item.deleted = false
@@ -53,9 +69,9 @@ class ListService < Sinatra::Application
 		end
 	end
 
-	delete '/lists/:list/items/:item' do
-		if (list = List.find_by_name(params[:list])) &&
-		   (item = list.items.where(:name => params[:item]).first)
+	delete '/lists/:list_id/items/:item_id' do
+		if (list = List.find_by_id(params[:list_id])) &&
+		   (item = list.items.where(:id => params[:item_id]).first)
 			item.deleted = true
 			unless item.save
 				halt 500
