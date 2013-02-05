@@ -36,25 +36,9 @@ class ListService < Sinatra::Application
 		format list.nil? ? nil : list.items.where(:name => params[:item]).first
 	end
 
-	post '/lists' do
-		format List.create(:name => params[:title])
-	end
-
-	post '/lists/:list_id/items' do
-		list = List.find_by_id(params[:list_id])
-		if list
-			item = list.items.create do |item|
-				item.name = params[:name]
-				item.needed = params[:needed] || false
-			end
-			# Log the state change
-		end
-		format item
-	end
-
-	put '/lists/:list_id/items/:item_id' do
-		list = List.find_by_id(params[:list_id])
-		item = list.items.find_by_id(params[:item_id])
+	put '/lists/:list_id/items/:item' do
+		list = List.find_or_create_by_id(params[:list_id])
+		item = list.items.find_or_create_by_name(params[:item])
 
 		list.title = params[:title] if params[:title]
 		item.deleted = false
@@ -69,9 +53,9 @@ class ListService < Sinatra::Application
 		end
 	end
 
-	delete '/lists/:list_id/items/:item_id' do
+	delete '/lists/:list_id/items/:item' do
 		if (list = List.find_by_id(params[:list_id])) &&
-		   (item = list.items.where(:id => params[:item_id]).first)
+		   (item = list.items.where(:name => params[:item]).first)
 			item.deleted = true
 			unless item.save
 				halt 500
