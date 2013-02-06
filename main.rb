@@ -64,4 +64,17 @@ class ListService < Sinatra::Application
 			status 404
 		end
 	end
+
+	put '/users/:user_id' do
+		return unless params[:wp_notify_url] || params[:ios_notify_url] || params[:android_notify_url]
+
+		user = User.find_or_create_by_id(params[:user_id])
+		user.wp_notify_url      = params[:wp_notify_url]      if params[:wp_notify_url]
+		user.ios_notify_url     = params[:ios_notify_url]     if params[:ios_notify_url]
+		user.android_notify_url = params[:android_notify_url] if params[:android_notify_url]
+
+		unless user.save
+			halt 500
+		end
+	end
 end

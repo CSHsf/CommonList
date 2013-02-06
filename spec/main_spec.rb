@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe 'List Service' do
 	before do
-		@user1 = User.create(:username => 'test_user1')
+		@user1 = User.create(:id => 'test_user1', :wp_notify_url => 'wp.example.com', :android_notify_url => 'android.example.com')
 
 		@list1 = List.create(:id => 'test_list1', :title => 'Test List 1')
 		@item1 = @list1.items.create(:name => 'test_item1', :deleted => false, :needed=> true)
@@ -36,7 +36,7 @@ describe 'List Service' do
 		end
 	end
 
-	describe 'get lists/:list_id/items' do
+	describe 'get /lists/:list_id/items' do
 		it 'renders a list of items' do
 			get "/lists/#{@list1.id}/items"
 			last_response.status.should == 200
@@ -56,7 +56,7 @@ describe 'List Service' do
 		end
 	end
 
-	describe 'get lists/:list_id/items/:item' do
+	describe 'get /lists/:list_id/items/:item' do
 		it 'renders an item' do
 			get "/lists/#{@item1.list.id}/items/#{@item1.name}"
 			last_response.status.should == 200
@@ -74,7 +74,7 @@ describe 'List Service' do
 		end
 	end
 
-	describe 'put lists/:list_id/items/:item' do
+	describe 'put /lists/:list_id/items/:item' do
 		it 'should create a new needed item and add it to an existing list' do
 			put "/lists/#{@list1.id}/items/new_item1", :needed => true
 			last_response.status.should == 200
@@ -199,7 +199,7 @@ describe 'List Service' do
 		end
 	end
 
-	describe 'delete lists/:list_id/items/:item' do
+	describe 'delete /lists/:list_id/items/:item' do
 		it 'should delete an item' do
 			delete "/lists/#{@item1.list.id}/items/#{@item1.name}"
 			last_response.status.should == 200
@@ -217,6 +217,40 @@ describe 'List Service' do
 			delete "/lists/#{@list3.id}/items/#{@item1.name}"
 			last_response.status.should == 404
 			last_response.body.should be_empty
+		end
+	end
+
+	describe 'put /users/:user_id' do
+		it 'should not create a new user without any notify URLs' do
+			put '/users/new_user1'
+			last_response.status.should == 200
+			last_response.body.should be_empty
+			user = User.find_by_id('new_user1')
+			user.should == nil
+		end
+
+		it 'should create a new user with at least one notify URL' do
+			put '/users/new_user1', :wp_notify_url => 'wp.example.com'
+			last_response.status.should == 200
+			last_response.body.should be_empty
+			user = User.find_by_id('new_user1')
+			user.should_not == nil
+			user.id.should == 'new_user1'
+			user.wp_notify_url.should == 'wp.example.com'
+			user.ios_notify_url.should be_empty
+			user.android_notify_url.should be_empty
+		end
+
+		it 'should update an existing user' do
+			put "/users/#{@user1.id}", :wp_notify_url => ''
+			last_response.status.should == 200
+			last_response.body.should be_empty
+			old_ios_notify_url = @user1.ios_notify_url
+			old_android_notify_url = @user1.android_notify_url
+			@user1.reload
+			@user1.wp_notify_url.should be_empty
+			@user1.ios_notify_url.should == old_ios_notify_url
+			@user1.android_notify_url.should == old_android_notify_url
 		end
 	end
 end
