@@ -37,15 +37,27 @@ class ListService < Sinatra::Application
 	end
 
 	put '/lists/:list_id/items/:item' do
+		needed = case params[:needed].try(:downcase)
+			when false.to_s then false
+			when true.to_s  then true
+			when nil        then nil
+			else halt 500
+		end
+
 		list = List.find_or_create_by_id(params[:list_id])
 		item = list.items.find_or_create_by_name(params[:item])
 
 		list.title = params[:title] if params[:title]
 		item.deleted = false
 
-		unless item.needed == params[:needed] || params[:needed].nil?
+		unless needed.nil? || item.needed == needed
 			# Log the state change
-			item.needed = params[:needed]
+			item.needed = needed
+
+			list.users.each do |user|
+				# Notify user of list change
+				p "Hey #{user.id}, #{item.name} is now #{item.needed ? 'needed' : 'unneeded'}!"
+			end
 		end
 
 		unless item.save && list.save

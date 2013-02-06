@@ -3,8 +3,11 @@ require 'spec_helper'
 describe 'List Service' do
 	before do
 		@user1 = User.create(:id => 'test_user1', :wp_notify_url => 'wp.example.com', :android_notify_url => 'android.example.com')
+		@user2 = User.create(:id => 'test_user2')
 
 		@list1 = List.create(:id => 'test_list1', :title => 'Test List 1')
+		@list1.users << [ @user1, @user2 ]
+
 		@item1 = @list1.items.create(:name => 'test_item1', :deleted => false, :needed=> true)
 		@item2 = @list1.items.create(:name => 'test_item2', :deleted => false, :needed=> false)
 		@item3 = @list1.items.create(:name => 'test_item3', :deleted => true,  :needed=> true)
