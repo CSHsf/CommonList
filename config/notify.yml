@@ -1,0 +1,8 @@
+production:
+  delayed: true
+
+development:
+  delayed: true
+
+test:
+  delayed: false

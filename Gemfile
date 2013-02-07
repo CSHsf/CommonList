@@ -23,3 +23,8 @@ group :production do
 	gem 'pg'
 	gem 'unicorn'
 end
+
+group :development, :production do
+	gem 'delayed_job'
+	gem 'delayed_job_active_record'
+end

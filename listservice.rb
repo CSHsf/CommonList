@@ -1,6 +1,16 @@
 class ListService < Sinatra::Application
 	configure do
 		set :database, YAML.load(ERB.new(File.read('config/database.yml')).result)[environment.to_s]
+		set :notify, YAML.load(ERB.new(File.read('config/notify.yml')).result)[environment.to_s]
+
+		if settings.notify['delayed']
+			class ::User
+				alias notify_no_delay notify
+				def notify(*args)
+					delay.notify_no_delay(*args)
+				end
+			end
+		end
 	end
 
 	configure :test do
@@ -54,10 +64,7 @@ class ListService < Sinatra::Application
 			# Log the state change
 			item.needed = needed
 
-			list.users.each do |user|
-				# Notify user of list change
-				p "Hey #{user.id}, #{item.name} is now #{item.needed ? 'needed' : 'unneeded'}!"
-			end
+			list.users.each { |user| user.notify(item) }
 		end
 
 		unless item.save && list.save
