@@ -14,6 +14,7 @@ GEM
       multi_json (~> 1.0)
     arel (3.0.2)
     builder (3.0.4)
+    daemons (1.1.8)
     database_cleaner (0.9.1)
     delayed_job (3.0.5)
       activesupport (~> 3.0)
@@ -63,6 +64,7 @@ PLATFORMS
 
 DEPENDENCIES
   activerecord
+  daemons
   database_cleaner
   delayed_job
   delayed_job_active_record

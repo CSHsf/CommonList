@@ -24,7 +24,9 @@ group :production do
 	gem 'unicorn'
 end
 
-group :development, :production do
+# This should work...
+#group :development, :production do
 	gem 'delayed_job'
 	gem 'delayed_job_active_record'
-end
+	gem 'daemons'
+#end

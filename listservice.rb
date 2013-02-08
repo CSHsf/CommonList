@@ -5,10 +5,7 @@ class ListService < Sinatra::Application
 
 		if settings.notify['delayed']
 			class ::User
-				alias notify_no_delay notify
-				def notify(*args)
-					delay.notify_no_delay(*args)
-				end
+				handle_asynchronously :notify
 			end
 		end
 	end
