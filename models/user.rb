@@ -1,7 +1,7 @@
 class User < ActiveRecord::Base
 	self.primary_key = :id
 
-	has_many :lists
+	has_and_belongs_to_many :lists
 
 	attr_accessible :id, :wp_notify_url, :ios_notify_url, :android_notify_url
 

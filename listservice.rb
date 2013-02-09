@@ -93,4 +93,22 @@ class ListService < Sinatra::Application
 			halt 500
 		end
 	end
+
+	put '/users/:user_id/subscribe' do
+		list = List.find_by_id(params[:list_id])
+		user = User.find_by_id(params[:user_id])
+		halt 404 unless list && user
+		list.users << user
+		return if list.save
+		halt 500
+	end
+
+	put '/users/:user_id/unsubscribe' do
+		list = List.find_by_id(params[:list_id])
+		user = User.find_by_id(params[:user_id])
+		halt 404 unless list && user
+		list.users.delete(user)
+		return if list.save
+		halt 500
+	end
 end

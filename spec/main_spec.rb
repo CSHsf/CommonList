@@ -15,6 +15,7 @@ describe 'List Service' do
 
 		@list2 = List.create(:id => 'test_list2')
 
+		@user3 = User.new(:id => 'invalid_user1')
 		@list3 = List.new(:id => 'invalid_list1')
 		@item5 = Item.new(:name => 'invalid_item1')
 	end
@@ -254,6 +255,58 @@ describe 'List Service' do
 			@user1.wp_notify_url.should be_empty
 			@user1.ios_notify_url.should == old_ios_notify_url
 			@user1.android_notify_url.should == old_android_notify_url
+		end
+	end
+
+	describe 'put /users/:user_id/subscribe' do
+		it 'should subscribe an existing user to an existing list' do
+			put "/users/#{@user1.id}/subscribe", :list_id => @list2.id
+			last_response.status.should == 200
+			last_response.body.should be_empty
+			@user1.reload
+			@list2.reload
+			@user1.lists.include?(@list2).should == true
+			@list2.users.include?(@user1).should == true
+		end
+		it 'should not subscribe an existing user to an invalid list' do
+			put "/users/#{@user1.id}/subscribe", :list_id => @list3.id
+			last_response.status.should == 404
+			last_response.body.should be_empty
+			@user1.reload
+			@user1.lists.include?(@list3).should == false
+		end
+		it 'should not subscribe an invalid user to an existing list' do
+			put "/users/#{@user3.id}/subscribe", :list_id => @list1.id
+			last_response.status.should == 404
+			last_response.body.should be_empty
+			@list1.reload
+			@list1.users.include?(@user3).should == false
+		end
+	end
+
+	describe 'put /users/:user_id/unsubscribe' do
+		it 'should unsubscribe an existing user to an existing list' do
+			put "/users/#{@user1.id}/unsubscribe", :list_id => @list1.id
+			last_response.status.should == 200
+			last_response.body.should be_empty
+			@user1.reload
+			@list1.reload
+			@user1.lists.include?(@list1).should == false
+			@list1.users.include?(@user1).should == false
+		end
+		it 'should not unsubscribe an existing user to an invalid list' do
+			put "/users/#{@user1.id}/unsubscribe", :list_id => @list3.id
+			last_response.status.should == 404
+			last_response.body.should be_empty
+			@user1.reload
+			@user1.lists.include?(@list3).should == false
+		end
+		it 'should not unsubscribe an invalid user to an existing list' do
+			put "/users/#{@user3.id}/unsubscribe", :list_id => @list1.id
+			last_response.status.should == 404
+			last_response.body.should be_empty
+			@list1.reload
+			@list1.users.include?(@user3).should == false
 		end
 	end
 end
