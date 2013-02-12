@@ -197,6 +197,40 @@ describe 'List Service' do
 			@item4.deleted.should == false
 			@item4.needed.should == true
 		end
+
+		it 'should log state changes to an item if it changes' do
+			put "/lists/#{@item1.list.id}/items/#{@item1.name}", :needed => false
+			last_response.status.should == 200
+			@item1.reload
+			@item1.events.count.should == 1
+			event = @item1.events.first
+			event.needed = false
+			event.deleted = false
+		end
+
+		it 'should log multiple state changes to an item if it changes' do
+			put "/lists/#{@item1.list.id}/items/#{@item1.name}", :needed => false
+			last_response.status.should == 200
+			@item1.reload
+			@item1.events.count.should == 1
+			event = @item1.events.last
+			event.needed = false
+			event.deleted = false
+			put "/lists/#{@item1.list.id}/items/#{@item1.name}", :needed => true
+			last_response.status.should == 200
+			@item1.reload
+			@item1.events.count.should == 2
+			event = @item1.events.last
+			event.needed = true
+			event.deleted = false
+		end
+
+		it "should not log state changes to an item if it doesn't change" do
+			put "/lists/#{@item1.list.id}/items/#{@item1.name}", :needed => true
+			last_response.status.should == 200
+			@item1.reload
+			@item1.events.count.should == 0
+		end
 	end
 
 	describe 'delete lists/:list_id/items/:item' do
@@ -217,6 +251,17 @@ describe 'List Service' do
 			delete "/lists/#{@list3.id}/items/#{@item1.name}"
 			last_response.status.should == 404
 			last_response.body.should be_empty
+		end
+
+		it 'should log state changes to an item if it is deleted' do
+			delete "/lists/#{@item1.list.id}/items/#{@item1.name}"
+			last_response.status.should == 200
+			old_needed = @item1.needed
+			@item1.reload
+			@item1.events.count.should == 1
+			event = @item1.events.first
+			event.needed = old_needed
+			event.deleted = true
 		end
 	end
 end
