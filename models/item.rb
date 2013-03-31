@@ -3,6 +3,6 @@ class Item < ActiveRecord::Base
 	has_many :events, :class_name => 'ItemEvent'
 
 	def as_json(options={})
-		attributes.slice('id', 'name', 'deleted', 'needed')
+		attributes.slice('id', 'name', 'deleted', 'needed', 'updated_at')
 	end
 end
