@@ -4,7 +4,7 @@ gem 'sinatra'
 gem 'rack'
 gem 'activerecord'
 gem 'sinatra-activerecord'
-gem 'rake'
+gem 'rake', '=10.0.2'
 gem 'uuidtools'
 
 group :test do
@@ -17,6 +17,10 @@ end
 group :development do
 	gem 'sqlite3'
 	gem 'shotgun'
+	gem 'capistrano'
+	gem 'railsless-deploy'
+	gem 'capistrano-unicorn'
+	gem 'rvm-capistrano'
 end
 
 group :production do
