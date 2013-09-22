@@ -92,7 +92,7 @@ DEPENDENCIES
   rack
   rack-test
   railsless-deploy
-  rake (= 10.0.2)
+  rake
   rspec
   rvm-capistrano
   shotgun

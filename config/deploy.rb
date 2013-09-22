@@ -1,3 +1,4 @@
+set :stages, %w(production staging)
 require 'capistrano/ext/multistage'
 
 # This is a workaround. Without this option, capistrano attempts to touch all
@@ -5,7 +6,7 @@ require 'capistrano/ext/multistage'
 # but these parent folders do not exist.
 set :normalize_asset_timestamps, false
 
-set :application, "commonlist"
+set :application, "dev.commonlist"
 set :repository,  "https://github.com/CSHsf/CommonList.git"
 
 set :scm, :git

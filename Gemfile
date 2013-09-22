@@ -4,7 +4,7 @@ gem 'sinatra'
 gem 'rack'
 gem 'activerecord'
 gem 'sinatra-activerecord'
-gem 'rake', '=10.0.2'
+gem 'rake'
 gem 'uuidtools'
 
 group :test do
