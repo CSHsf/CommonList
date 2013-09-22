@@ -11,7 +11,7 @@ group :test do
 	gem 'sqlite3'
 	gem 'rack-test'
 	gem 'rspec'
-	gem 'database_cleaner'
+	gem 'database_cleaner', '< 1.1.0'
 end
 
 group :development do

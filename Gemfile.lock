@@ -27,7 +27,7 @@ GEM
       net-ssh-gateway (>= 1.1.0)
     capistrano-unicorn (0.1.10)
       capistrano
-    database_cleaner (1.1.1)
+    database_cleaner (1.0.1)
     diff-lcs (1.2.4)
     highline (1.6.19)
     i18n (0.6.5)
@@ -49,7 +49,7 @@ GEM
       rack (>= 1.0)
     railsless-deploy (1.1.2)
     raindrops (0.12.0)
-    rake (10.0.2)
+    rake (10.1.0)
     rspec (2.14.1)
       rspec-core (~> 2.14.0)
       rspec-expectations (~> 2.14.0)
@@ -87,7 +87,7 @@ DEPENDENCIES
   activerecord
   capistrano
   capistrano-unicorn
-  database_cleaner
+  database_cleaner (< 1.1.0)
   pg
   rack
   rack-test
