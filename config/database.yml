@@ -1,26 +1,36 @@
+---
+local: &local
+  adapter:  sqlite3
+  encoding: unicode
+  username: ~
+  password: ~
+  host:     localhost
+  pool:     ~
+  timeout:  ~
+
+remote: &remote
+  adapter:  postgresql
+  encoding: unicode
+  host:     localhost
+  pool:     5
+  timeout:  ~
+
 production:
-  adapter:
-  database:
-  username:
-  host:
-  password:
-  pool:
-  timeout:
+  <<: *remote
+  database: ~
+  username: ~
+  password: ~
+
+staging:
+  <<: *remote
+  database: ~
+  username: ~
+  password: ~
 
 development:
-  adapter:  sqlite3
+  <<: *local
   database: db/develop.db
-  username:
-  host:     localhost
-  password:
-  pool:
-  timeout:
 
 test:
-  adapter:  sqlite3
+  <<: *local
   database: db/test.db
-  username:
-  host:     localhost
-  password:
-  pool:
-  timeout:
